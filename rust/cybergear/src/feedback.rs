@@ -17,10 +17,10 @@ pub struct Feedback {
     is_undervoltage: bool,
     mode: MotorModeFeedback,
 
-    pub(crate) angle: f32,
-    pub(crate) velocity: f32,
-    pub(crate) torque: f32,
-    pub(crate) temperature: f32,
+    pub angle: f32,
+    pub velocity: f32,
+    pub torque: f32,
+    pub temperature: f32,
 }
 
 impl Feedback {
@@ -65,18 +65,18 @@ impl Feedback {
     }
 
     fn parse_data_buffer_normal(&mut self, buffer: &[u8; 8]) {
-        self.angle = u16::from_le_bytes(buffer[0..2].try_into().unwrap()) as f32 * 2.0 * MAX_ANGLE
+        self.angle = u16::from_be_bytes(buffer[0..2].try_into().unwrap()) as f32 * 2.0 * MAX_ANGLE
             / u16::MAX as f32
             - MAX_ANGLE;
         self.velocity =
-            u16::from_le_bytes(buffer[2..4].try_into().unwrap()) as f32 * 2.0 * MAX_VELOCITY
+            u16::from_be_bytes(buffer[2..4].try_into().unwrap()) as f32 * 2.0 * MAX_VELOCITY
                 / u16::MAX as f32
                 - MAX_VELOCITY;
         self.torque =
-            u16::from_le_bytes(buffer[4..6].try_into().unwrap()) as f32 * 2.0 * MAX_TORQUE
+            u16::from_be_bytes(buffer[4..6].try_into().unwrap()) as f32 * 2.0 * MAX_TORQUE
                 / u16::MAX as f32
                 - MAX_TORQUE;
-        self.temperature = u16::from_le_bytes(buffer[6..8].try_into().unwrap()) as f32 * 10.0;
+        self.temperature = u16::from_be_bytes(buffer[6..8].try_into().unwrap()) as f32 * 10.0;
     }
 
     fn parse_data_buffer_parameter(&mut self, _buffer: &[u8; 8]) {
